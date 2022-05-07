@@ -3,7 +3,12 @@
 <MudText Typo="Typo.h3">Bildergalerie</MudText>
 
 <MudCarousel Class="mud-width-full" @ref="_carousel" ItemsSource="@_source" @bind-SelectedIndex="selectedIndex" Style="height:500px;" ShowArrows="@_arrows" ShowBullets="@_bullets" AutoCycle="@_autocycle">
-	<ItemTemplate>
-		<MudImage Src="@context" Fluid="true" Class="rounded-lg" />
-	</ItemTemplate>
+    <ItemTemplate>
+        <MudImage Src="@context" Fluid="true" Class="rounded-lg" />
+    </ItemTemplate>
 </MudCarousel>
+
+<MudText Typo="Typo.body1">
+    © 2011 Bethesda Softworks LLC, a ZeniMax Media company. The Elder Scrolls, Skyrim, Bethesda, Bethesda Game Studios, Bethesda Softworks, ZeniMax and related logos are
+    registered trademarks or trademarks of ZeniMax Media Inc. in the U.S. and/or other countries. All Rights Reserved.
+</MudText>
