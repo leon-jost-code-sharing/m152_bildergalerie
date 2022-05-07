@@ -1,0 +1,9 @@
+﻿@page "/"
+
+<MudText Typo="Typo.h3">Bildergalerie</MudText>
+
+<MudCarousel Class="mud-width-full" @ref="_carousel" ItemsSource="@_source" @bind-SelectedIndex="selectedIndex" Style="height:500px;" ShowArrows="@_arrows" ShowBullets="@_bullets" AutoCycle="@_autocycle">
+	<ItemTemplate>
+		<MudImage Src="@context" Fluid="true" Class="rounded-lg" />
+	</ItemTemplate>
+</MudCarousel>
