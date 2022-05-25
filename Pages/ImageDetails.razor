@@ -1,0 +1,19 @@
+﻿@page "/imageDetails/{imageName}"
+
+<MudGrid>
+    @if (_imageSizesUrls == null)
+    {
+        <MudText>Loading...</MudText>
+    }
+    else
+    {
+        foreach (KeyValuePair<string, string> imageSizeUrl in _imageSizesUrls)
+        {
+            <MudContainer>
+                <MudImage Src="@imageSizeUrl.Value" />
+                <MudText Typo="Typo.body1">@imageSizeUrl.Key</MudText>
+                <br>
+            </MudContainer>
+        }
+    }
+</MudGrid>
