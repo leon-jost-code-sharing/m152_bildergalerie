@@ -24,7 +24,7 @@ namespace m152_bildergalerie.Pages
 
             set
             {
-                _imageName = value;
+                _imageName = ImageService.ReplaceLastOccurrence(value, "-", ".");
 
                 _image = ImageService.Images.Find(i => i.Name == _imageName);
 

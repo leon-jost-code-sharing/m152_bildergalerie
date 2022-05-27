@@ -38,8 +38,9 @@ else
         @foreach (Image image in ImageService.Images)
         {
             string imageUrl = $"{_imageKitBaseUrl}tr:w-600/{image.Name}";
+            string imageNameForUrl = ImageService.ReplaceLastOccurrence(image.Name, ".", "-");
             <MudItem xs="4">
-                <MudImage Src="@imageUrl" Fluid="true" Class="rounded-lg" @onclick="() => NavigateToImageDetailsPage(image.Name)"/>
+                <MudImage Src="@imageUrl" Fluid="true" Class="rounded-lg" @onclick="() => NavigateToImageDetailsPage(imageNameForUrl)"/>
             </MudItem>
         }
     </MudGrid>
