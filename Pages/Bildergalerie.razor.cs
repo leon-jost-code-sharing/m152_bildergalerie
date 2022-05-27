@@ -31,7 +31,7 @@ namespace m152_bildergalerie.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            HttpResponseMessage response = await HttpClient.GetAsync("https://localhost:44369/api/images");
+            HttpResponseMessage response = await HttpClient.GetAsync("https://m152bildergalerierestapi.azurewebsites.net/api/images");
             ImageService.Images = await response.Content.ReadFromJsonAsync<List<Image>>();
 
             _carouselSource = ImageService.Images.Select(i => $"{_imageKitBaseUrl}{i.Name}?tr=w-600").ToList();
@@ -86,7 +86,7 @@ namespace m152_bildergalerie.Pages
                     fileName: file.Name);
             }
 
-            await HttpClient.PostAsync("https://localhost:44369/api/images", content);
+            await HttpClient.PostAsync("https://m152bildergalerierestapi.azurewebsites.net/api/images", content);
             _displayProgressBar = false;
             await Clear();
             StateHasChanged();
