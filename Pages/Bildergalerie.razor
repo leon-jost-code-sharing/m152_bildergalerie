@@ -1,9 +1,10 @@
 ﻿@page "/"
+@using m152_bildergalerie.Pocos
 
 @inject ISnackbar Snackbar
 
 @*Image Upload*@
-<MudText Typo="Typo.h4">File Upload</MudText>
+<MudText Typo="Typo.h4" Class="mt-8 mb-4">File Upload</MudText>
 <MudPaper @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass" Height="300px" Outlined="true" Class="@DragClass">
     @if (!Clearing)
     {
@@ -19,22 +20,38 @@
     <MudButton OnClick="Upload" Disabled="@(!fileNames.Any())" Color="Color.Primary" Variant="Variant.Filled">Upload</MudButton>
     <MudButton OnClick="Clear" Disabled="@(!fileNames.Any())" Color="Color.Error" Variant="Variant.Filled">Clear</MudButton>
 </MudToolBar>
+@if (_displayProgressBar)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
 
 @*Bildergalerie*@
-<MudText Typo="Typo.h4">Bildergalerie</MudText>
-@if (_imageNames == null)
+<MudText Typo="Typo.h4" Class="mt-4">Bildergalerie</MudText>
+<MudText Typo="Typo.body1" Class="mb-4">Click on the image to get more information and download it in you prefered format.</MudText>
+@if (ImageService.Images == null)
 {
     <MudText Typo="Typo.body1">Loading...</MudText>
 }
 else
 {
     <MudGrid>
-        @foreach (string imageName in _imageNames)
+        @foreach (Image image in ImageService.Images)
         {
-            string imageUrl = _imageKitBaseUrl + imageName;
+            string imageUrl = $"{_imageKitBaseUrl}tr:w-600/{image.Name}";
             <MudItem xs="4">
-                <MudImage Src="@imageUrl" Fluid="true" @onclick="() => NavigateToImageDetailsPage(imageName)"/>
+                <MudImage Src="@imageUrl" Fluid="true" Class="rounded-lg" @onclick="() => NavigateToImageDetailsPage(image.Name)"/>
             </MudItem>
         }
     </MudGrid>
 }
+
+@*Carousel*@
+<MudText Typo="Typo.h4" Class="mt-6 mb-4">Carousel</MudText>
+
+<MudCarousel Class="mud-width-full mb-8" @ref="_carousel" ItemsSource="@_carouselSource" @bind-SelectedIndex="selectedIndex" Style="height:500px;" ShowArrows="@_arrows" ShowBullets="@_bullets" AutoCycle="@_autocycle">
+    <ItemTemplate>
+        <div class="d-flex justify-center" style="height: 90%">
+            <MudImage Src="@context" Class="rounded-lg" />
+        </div>
+    </ItemTemplate>
+</MudCarousel>

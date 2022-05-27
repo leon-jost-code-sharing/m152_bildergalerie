@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using m152_bildergalerie.Pocos;
+using m152_bildergalerie.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace m152_bildergalerie.Pages
 {
     public partial class ImageDetails
     {
+        [Inject]
+        public IImageService ImageService { get; set; }
+
         private string _imageKitBaseUrl = "https://ik.imagekit.io/leonjost/";
-        private Dictionary<string, string> _imageSizesUrls;
+        private Dictionary<string, string> _imageSizeUrls;
+        private Image _image;
 
         private string _imageName;
         [Parameter]
@@ -20,11 +26,14 @@ namespace m152_bildergalerie.Pages
             {
                 _imageName = value;
 
-                _imageSizesUrls = new Dictionary<string, string>()
+                _image = ImageService.Images.Find(i => i.Name == _imageName);
+
+                _imageSizeUrls = new Dictionary<string, string>()
                 {
-                    { "300x300", $"{_imageKitBaseUrl}tr:w-300,h-300/{_imageName}" },
-                    { "600x600", $"{_imageKitBaseUrl}tr:w-600,h-600/{_imageName}" },
-                    { "1000x1000", $"{_imageKitBaseUrl}tr:w-1000,h-1000/{_imageName}" }
+                    { $"Original: {_image.Width}x{_image.Height}", $"{_imageKitBaseUrl}{_image.Name}?tr=w-auto" },
+                    { $"Transformed: 300xScaledToKeepAspectRatio", $"{_imageKitBaseUrl}{_image.Name}?tr=w-300" },
+                    { $"Transformed: 600xScaledToKeepAspectRatio", $"{_imageKitBaseUrl}{_image.Name}?tr=w-600" },
+                    { $"Transformed: 1000xScaledToKeepAspectRatio", $"{_imageKitBaseUrl}{_image.Name}?tr=w-1000" }
                 };
             }
         }

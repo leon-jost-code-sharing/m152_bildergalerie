@@ -1,19 +1,43 @@
 ﻿@page "/imageDetails/{imageName}"
 
-<MudGrid>
-    @if (_imageSizesUrls == null)
-    {
-        <MudText>Loading...</MudText>
-    }
-    else
-    {
-        foreach (KeyValuePair<string, string> imageSizeUrl in _imageSizesUrls)
-        {
-            <MudContainer>
-                <MudImage Src="@imageSizeUrl.Value" />
-                <MudText Typo="Typo.body1">@imageSizeUrl.Key</MudText>
-                <br>
-            </MudContainer>
-        }
-    }
-</MudGrid>
+@if (_image == null)
+{
+    <MudText>Loading...</MudText>
+}
+else
+{
+    string imageUrl = $"{_imageKitBaseUrl}tr:w-600/{_image.Name}";
+
+    <MudContainer Class="mt-10" MaxWidth="MaxWidth.Medium">
+        <MudImage Src="@imageUrl" Class="rounded-lg" />
+
+        <MudText Typo="Typo.h5" Class="mb-2 mt-4">Downloads</MudText>
+
+        <MudText Typo="Typo.body1" Class="mb-2 mt-2">jpg:</MudText>
+        <MudStack>
+            @foreach (KeyValuePair<string, string> imageSizeUrl in _imageSizeUrls)
+            {
+                string url = imageSizeUrl.Value + ",f-jpg";
+                <MudLink Href="@url" Target="_blank">@imageSizeUrl.Key</MudLink>
+            }
+        </MudStack>
+
+        <MudText Typo="Typo.body1" Class="mb-2 mt-2">png:</MudText>
+        <MudStack>
+            @foreach (KeyValuePair<string, string> imageSizeUrl in _imageSizeUrls)
+            {
+                string url = imageSizeUrl.Value + ",f-png";
+                <MudLink Href="@url" Target="_blank">@imageSizeUrl.Key</MudLink>
+            }
+        </MudStack>
+
+        <MudText Typo="Typo.body1" Class="mb-2 mt-2">webp:</MudText>
+        <MudStack Class="mb-8">
+            @foreach (KeyValuePair<string, string> imageSizeUrl in _imageSizeUrls)
+            {
+                string url = imageSizeUrl.Value + ",f-webp";
+                <MudLink Href="@url" Target="_blank">@imageSizeUrl.Key</MudLink>
+            }
+        </MudStack>
+    </MudContainer>
+}

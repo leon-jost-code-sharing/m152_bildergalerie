@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using m152_bildergalerie.Pocos;
+using m152_bildergalerie.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using System.Net.Http.Headers;
@@ -12,6 +14,8 @@ namespace m152_bildergalerie.Pages
         public HttpClient HttpClient { get; set; }
         [Inject]
         public NavigationManager NavManager { get; set; }
+        [Inject]
+        public IImageService ImageService { get; set; }
 
         // Image Upload 
         private bool Clearing = false;
@@ -19,16 +23,18 @@ namespace m152_bildergalerie.Pages
         private string DragClass = DefaultDragClass;
         private List<string> fileNames = new List<string>();
         private IList<IBrowserFile> _files = new List<IBrowserFile>();
+        private bool _displayProgressBar = false;
 
         // Bildergalerie
         private string _imageKitBaseUrl = "https://ik.imagekit.io/leonjost/";
-        private List<string> _imageNames;
 
 
         protected override async Task OnInitializedAsync()
         {
             HttpResponseMessage response = await HttpClient.GetAsync("https://localhost:44369/api/images");
-            _imageNames = await response.Content.ReadFromJsonAsync<List<string>>();
+            ImageService.Images = await response.Content.ReadFromJsonAsync<List<Image>>();
+
+            _carouselSource = ImageService.Images.Select(i => $"{_imageKitBaseUrl}{i.Name}?tr=w-600").ToList();
         }
 
         #region Image Upload
@@ -39,8 +45,16 @@ namespace m152_bildergalerie.Pages
             var files = e.GetMultipleFiles();
             foreach (var file in files)
             {
-                fileNames.Add(file.Name);
-                _files.Add(file);
+                if (file.Size > 1000000)
+                {
+                    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                    Snackbar.Add($"Files with {file.Size} bytes size are not allowed", Severity.Error);
+                }
+                else
+                {
+                    fileNames.Add(file.Name);
+                    _files.Add(file);
+                }
             }
         }
 
@@ -57,10 +71,11 @@ namespace m152_bildergalerie.Pages
         {
             using var content = new MultipartFormDataContent();
 
+            _displayProgressBar = true;
             foreach (var file in _files)
             {
                 var fileContent =
-                    new StreamContent(file.OpenReadStream());
+                    new StreamContent(file.OpenReadStream(maxAllowedSize: 1000000));
 
                 fileContent.Headers.ContentType =
                     new MediaTypeHeaderValue(file.ContentType);
@@ -69,9 +84,12 @@ namespace m152_bildergalerie.Pages
                     content: fileContent,
                     name: "\"files\"",
                     fileName: file.Name);
-
-                var response = await HttpClient.PostAsync("https://localhost:44369/api/images", content);
             }
+
+            await HttpClient.PostAsync("https://localhost:44369/api/images", content);
+            _displayProgressBar = false;
+            await Clear();
+            StateHasChanged();
         }
 
         private void SetDragClass()
@@ -92,6 +110,17 @@ namespace m152_bildergalerie.Pages
         {
             NavManager.NavigateTo($"/imageDetails/{imageName}");
         }
+
+        #endregion
+
+        #region Carousel
+
+        private MudCarousel<string> _carousel;
+        private bool _arrows = true;
+        private bool _bullets = true;
+        private bool _autocycle = true;
+        private IList<string> _carouselSource;
+        private int selectedIndex = 2;
 
         #endregion
     }
