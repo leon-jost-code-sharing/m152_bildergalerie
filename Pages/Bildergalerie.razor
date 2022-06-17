@@ -30,7 +30,7 @@
 <MudText Typo="Typo.body1" Class="mb-4">Click on the image to get more information and download it in you prefered format.</MudText>
 @if (ImageService.Images == null)
 {
-    <MudText Typo="Typo.body1">Loading...</MudText>
+    <MudText Typo="Typo.body1">Loading Bildergalerie... (if it's taking very long, try refreshing the page)</MudText>
 }
 else
 {
@@ -49,13 +49,21 @@ else
 @*Carousel*@
 <MudText Typo="Typo.h4" Class="mt-6 mb-4">Carousel</MudText>
 
-<MudCarousel Class="mud-width-full mb-8" @ref="_carousel" ItemsSource="@_carouselSource" @bind-SelectedIndex="selectedIndex" Style="height:500px;" ShowArrows="@_arrows" ShowBullets="@_bullets" AutoCycle="@_autocycle">
+@if (_carouselSource?.Any() ?? false)
+{
+    <MudCarousel Class="mud-width-full mb-8" @ref="_carousel" ItemsSource="@_carouselSource" @bind-SelectedIndex="selectedIndex" Style="height:500px;" ShowArrows="@_arrows" ShowBullets="@_bullets" AutoCycle="@_autocycle">
     <ItemTemplate>
         <div class="d-flex justify-center" style="height: 90%">
             <MudImage Src="@context" Class="rounded-lg" />
         </div>
     </ItemTemplate>
-</MudCarousel>
+    </MudCarousel>
+}
+else
+{
+    <MudText Typo="Typo.body1">Loading Carousel... (if it's taking very long, try refreshing the page)</MudText>
+}
+
 
 @*Animation*@
 <MudText Typo="Typo.h4">Animation</MudText>
