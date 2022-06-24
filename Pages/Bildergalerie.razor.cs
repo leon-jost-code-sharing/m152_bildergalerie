@@ -108,7 +108,7 @@ namespace m152_bildergalerie.Pages
 
         private async Task NavigateToImageDetailsPage(string imageName)
         {
-            NavManager.NavigateTo($"/m152_bildergalerie/imageDetails/{imageName}"); // TODO: add /m152_bildergalerie to start of url
+            NavManager.NavigateTo($"/imageDetails/{imageName}"); // TODO: add /m152_bildergalerie to start of url
         }
 
         #endregion
